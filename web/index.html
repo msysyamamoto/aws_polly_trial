@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css">
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        $(document).foundation();
+    </script>
+    <title>Say</title>
+</head>
+<body>
+    <div id="form" class="grid-container fluid">
+        <div class="grid-x grid-margin-x">
+            <div class="cell small-12">
+                <label>Text
+                    <textarea id="text" rows="5" v-model="text"></textarea>
+                </label>
+            </div>
+            <div class="cell small-6">
+                <label>Language and Region
+                    <select id="language" name="language" v-model="language" v-on:change="selectLanguage()">
+                        <option v-for="lang in languages" v-bind:value="lang">
+                            {{ lang }}
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="cell small-6">
+                <label>Voice   
+                    <select id="voice" name="voice" v-model="voice">
+                        <option v-for="v in voices" v-bind:value="v.Id">
+                            {{ v.Gender }}, {{ v.Id }}
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="cell small-12">
+                <a class="button expanded primary" id="listen" v-on:click="play()">音声を聴く/Listen to speech</a>
+            </div>
+            <div class="cell small-12">
+                <a class="button expanded secondary" download="speech.mp3" v-bind:href="speechURL()">MP3ファイルのダウンロード/Download MP3</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    var form = new Vue({
+        el: '#form',
+        data: {
+            text: 'あのイーハトーヴォのすきとおった風',
+            languages: [],
+            language: 'ja-JP',
+            voices: [],
+            voice: 'Mizuki',
+            describeVoices: {},
+        },
+        methods: {
+            play: function (_event) {
+                var audio = new Audio(this.speechURL());
+                audio.load();
+                audio.play();
+            },
+            speechURL: function () {
+                var text  = encodeURIComponent(this.text);
+                var voice = encodeURIComponent(this.voice);
+                return '/beta/speech.mp3?voice=' + voice + '&text=' + text;
+            },
+            selectLanguage: function (_event) {
+                this.voices = this.describeVoices[this.language];
+                this.voice  = this.voices[0]["Id"];
+            }
+        },
+        mounted: function () {
+            var self = this;
+            axios.get('/beta/voices')
+                .then( function (res) {
+                    self.describeVoices = res.data;
+                    var keys = Object.keys(self.describeVoices);
+                    self.languages = keys;
+                    self.language  = keys[0];
+                    self.selectLanguage({});
+                }).catch( function (res) {
+                    console.log(res);
+                });
+        }
+    });
+    </script>
+</body>
+</html>
