@@ -7,7 +7,7 @@ def text_to_mp3(event, context):
     session = Session()
     polly = session.client("polly")
 
-    response = polly.synthesize_speech(Text=event['text'], OutputFormat="mp3", oiceId=event['voice'])
+    response = polly.synthesize_speech(Text=event['text'], OutputFormat="mp3", VoiceId=event['voice'])
 
     encoded = base64.b64encode(response['AudioStream'].read()).decode('utf-8')
     
