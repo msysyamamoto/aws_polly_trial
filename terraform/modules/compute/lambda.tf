@@ -1,12 +1,12 @@
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/lambda_function"
-  output_path = "${path.module}/lambda_function.zip"
+  source_dir  = "${path.module}/lambda_handler"
+  output_path = "${path.module}/lambda_handler.zip"
 }
 
 resource "aws_lambda_function" "text_to_mp3" {
-  filename         = "${path.module}/lambda_function.zip"
-  handler          = "lambda_function.text_to_mp3"
+  filename         = "${path.module}/lambda_handler.zip"
+  handler          = "lambda_handler.text_to_mp3"
   source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
   function_name    = "aws_polly-TextToMP3"
   role             = "${aws_iam_role.lambda_polly.arn}"
@@ -50,8 +50,8 @@ resource "aws_iam_role_policy_attachment" "policy_attach_polly_full_access" {
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 resource "aws_lambda_function" "describe" {
-  filename         = "${path.module}/lambda_function.zip"
-  handler          = "lambda_function.describe_voices"
+  filename         = "${path.module}/lambda_handler.zip"
+  handler          = "lambda_handler.describe_voices"
   source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
   function_name    = "aws_polly-DescribeVoices"
   role             = "${aws_iam_role.lambda_polly.arn}"
