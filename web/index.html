@@ -13,18 +13,18 @@
     <script>
         $(document).foundation();
     </script>
-    <title>Say</title>
+    <title>AWS Polly Trial</title>
 </head>
 <body>
     <div id="form" class="grid-container fluid">
         <div class="grid-x grid-margin-x">
             <div class="cell small-12">
-                <label>Text
+                <label>テキスト/Text
                     <textarea id="text" rows="5" v-model="text"></textarea>
                 </label>
             </div>
             <div class="cell small-6">
-                <label>Language and Region
+                <label>言語と地域/Language and Region
                     <select id="language" name="language" v-model="language" v-on:change="selectLanguage()">
                         <option v-for="lang in languages" v-bind:value="lang">
                             {{ lang }}
@@ -33,7 +33,7 @@
                 </label>
             </div>
             <div class="cell small-6">
-                <label>Voice   
+                <label>声/Voice   
                     <select id="voice" name="voice" v-model="voice">
                         <option v-for="v in voices" v-bind:value="v.Id">
                             {{ v.Gender }}, {{ v.Id }}
