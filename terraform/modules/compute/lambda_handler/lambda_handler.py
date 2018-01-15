@@ -24,7 +24,7 @@ def describe_voices(event, context):
     vs = response["Voices"]
     langage_code_getter = itemgetter("LanguageCode")
     sorted_voices       = sorted(vs, key=langage_code_getter)
-    grouping_voices     = groupby(vs, key=langage_code_getter)
+    grouping_voices     = groupby(sorted_voices, key=langage_code_getter)
 
     res = {}
     for (language_code, voices) in grouping_voices:
