@@ -3,10 +3,13 @@ from itertools import groupby
 from operator import itemgetter
 from boto3 import Session
 
-def text_to_mp3(event, context):
-    session = Session()
-    polly = session.client("polly")
 
+def create_polly_client():
+    session = Session()
+    return session.client('polly')
+
+def text_to_mp3(event, context):
+    polly = create_polly_client()
     response = polly.synthesize_speech(Text=event['text'], OutputFormat="mp3", VoiceId=event['voice'])
 
     encoded = base64.b64encode(response['AudioStream'].read()).decode('utf-8')
@@ -15,10 +18,7 @@ def text_to_mp3(event, context):
 
 
 def describe_voices(event, context):
-    
-    session = Session()
-    polly = session.client("polly")
-
+    polly = create_polly_client()
     response = polly.describe_voices()
 
     vs = response["Voices"]
