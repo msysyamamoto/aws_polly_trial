@@ -48,6 +48,22 @@ resource "aws_iam_role_policy_attachment" "policy_attach_polly_full_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonPollyFullAccess"
 }
 
+resource "aws_iam_role_policy" "policy_cloudwatch_logs" {
+  name = "ClowdWatchLogsLambda"
+  role = "${aws_iam_role.lambda_polly.name}"
+
+  policy = "${data.template_file.policy_cloudwatch_logs.rendered}"
+}
+
+data "template_file" "policy_cloudwatch_logs" {
+  template = "${file("${path.module}/policy_cloudwatch_logs.tpl.json")}"
+
+  vars {
+    region     = "${var.region}"
+    account_id = "${var.account_id}"
+  }
+}
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 resource "aws_lambda_function" "describe" {
   filename         = "${path.module}/lambda_handler.zip"
