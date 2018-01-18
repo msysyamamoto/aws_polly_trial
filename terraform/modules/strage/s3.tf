@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "static_contents" {
-  bucket        = "static-contents-${var.region}-${var.account_id}"
+  bucket        = "polly-trial-${var.region}-${var.account_id}"
   region        = "${var.region}"
   acl           = "private"
   force_destroy = true
